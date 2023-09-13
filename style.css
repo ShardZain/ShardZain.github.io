@@ -1,7 +1,7 @@
 h1{
-    text-shadow: -2px 2px black;
     color: white;
     text-align: center;
+    text-shadow: -2px 2px;
 }
 
 background{
@@ -17,9 +17,9 @@ h2{
 }
 
 ul{
-    color: orange;
+    color: white;
 }
 
 ol{
-    color: orange;
+    color: white;
 }
