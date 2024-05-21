@@ -1,15 +1,15 @@
 h1{
-    color: white;
+    color: black;
     text-align: center;
     text-shadow: -2px 2px orange;
 }
 
 body{
-    background-color: white;
+    background-color: black;
 }
 
 p{
-    color: black;
+    color: white;
 }
 
 h2{
@@ -17,9 +17,9 @@ h2{
 }
 
 ul{
-    color: black;
+    color: white;
 }
 
 ol{
-    color: black;
+    color: white;
 }
