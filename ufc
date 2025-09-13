@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MMA Pick'em</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .fight-card, .leaderboard {
+      background: #fff;
+      padding: 15px;
+      margin: 20px auto;
+      border-radius: 8px;
+      max-width: 500px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .fight {
+      margin-bottom: 15px;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    label {
+      display: block;
+      margin: 4px 0;
+    }
+    button {
+      background: #007bff;
+      color: #fff;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>MMA Pick'em</h1>
+
+  <!-- Fight card -->
+  <div class="fight-card">
+    <h2>Upcoming Main Card</h2>
+
+    <div class="fight" data-fight-id="1">
+      <p><strong>Fighter A vs Fighter B</strong></p>
+      <label>Pick Winner:
+        <select class="pick-winner">
+          <option value="">--Choose--</option>
+          <option value="Fighter A">Fighter A</option>
+          <option value="Fighter B">Fighter B</option>
+        </select>
+      </label>
+      <label>Pick Method:
+        <select class="pick-method">
+          <option value="">--Choose--</option>
+          <option value="KO/TKO">KO/TKO</option>
+          <option value="Submission">Submission</option>
+          <option value="Decision">Decision</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="fight" data-fight-id="2">
+      <p><strong>Fighter C vs Fighter D</strong></p>
+      <label>Pick Winner:
+        <select class="pick-winner">
+          <option value="">--Choose--</option>
+          <option value="Fighter C">Fighter C</option>
+          <option value="Fighter D">Fighter D</option>
+        </select>
+      </label>
+      <label>Pick Method:
+        <select class="pick-method">
+          <option value="">--Choose--</option>
+          <option value="KO/TKO">KO/TKO</option>
+          <option value="Submission">Submission</option>
+          <option value="Decision">Decision</option>
+        </select>
+      </label>
+    </div>
+
+    <button onclick="submitPicks()">Submit Picks</button>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="leaderboard">
+    <h2>Leaderboard</h2>
+    <table id="leaderboardTable">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Points</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- JS will fill this -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Admin enter results -->
+  <div class="fight-card">
+    <h2>Admin: Enter Results</h2>
+    <label>Fight 1 Winner:
+      <input type="text" id="fight1Winner" placeholder="Fighter A or Fighter B">
+    </label>
+    <label>Fight 1 Method:
+      <input type="text" id="fight1Method" placeholder="KO/TKO, Submission, Decision">
+    </label>
+    <label>Fight 2 Winner:
+      <input type="text" id="fight2Winner" placeholder="Fighter C or Fighter D">
+    </label>
+    <label>Fight 2 Method:
+      <input type="text" id="fight2Method" placeholder="KO/TKO, Submission, Decision">
+    </label>
+    <button onclick="calculateScores()">Calculate Scores</button>
+  </div>
+
+  <script>
+    let users = [
+      {name: "User1", picks: {}, points: 0}
+    ];
+
+    function submitPicks() {
+      const fights = document.querySelectorAll(".fight");
+      let picks = {};
+      fights.forEach(fight => {
+        const id = fight.getAttribute("data-fight-id");
+        const winner = fight.querySelector(".pick-winner").value;
+        const method = fight.querySelector(".pick-method").value;
+        picks[id] = {winner, method};
+      });
+      users[0].picks = picks;
+      alert("Picks submitted!");
+    }
+
+    function calculateScores() {
+      const results = {
+        "1": {
+          winner: document.getElementById("fight1Winner").value.trim(),
+          method: document.getElementById("fight1Method").value.trim()
+        },
+        "2": {
+          winner: document.getElementById("fight2Winner").value.trim(),
+          method: document.getElementById("fight2Method").value.trim()
+        }
+      };
+
+      users.forEach(user => {
+        user.points = 0;
+        for (let fightId in results) {
+          const pick = user.picks[fightId];
+          const result = results[fightId];
+          if (!pick) continue;
+          if (pick.winner === result.winner) {
+            user.points += 10;
+            if (pick.method === result.method) {
+              user.points += 5;
+            }
+          }
+        }
+      });
+
+      updateLeaderboard();
+    }
+
+    function updateLeaderboard() {
+      const tbody = document.querySelector("#leaderboardTable tbody");
+      tbody.innerHTML = "";
+      users.sort((a, b) => b.points - a.points);
+      users.forEach(user => {
+        const row = `<tr><td>${user.name}</td><td>${user.points}</td></tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+  </script>
+
+</body>
+</html>
